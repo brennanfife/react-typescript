@@ -110,78 +110,39 @@
 //   }
 // }
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import {
   widget,
   ChartingLibraryWidgetOptions,
-  LanguageCode,
   IChartingLibraryWidget,
-  //   ResolutionString,
 } from './charting_library';
 
-// export interface ChartContainerProps {
-//   symbol: ChartingLibraryWidgetOptions['symbol'];
-//   interval: ChartingLibraryWidgetOptions['interval'];
-//   datafeedUrl: string;
-//   libraryPath: ChartingLibraryWidgetOptions['library_path'];
-//   chartsStorageUrl: ChartingLibraryWidgetOptions['charts_storage_url'];
-//   chartsStorageApiVersion: ChartingLibraryWidgetOptions['charts_storage_api_version'];
-//   clientId: ChartingLibraryWidgetOptions['client_id'];
-//   userId: ChartingLibraryWidgetOptions['user_id'];
-//   fullscreen: ChartingLibraryWidgetOptions['fullscreen'];
-//   autosize: ChartingLibraryWidgetOptions['autosize'];
-//   studiesOverrides: ChartingLibraryWidgetOptions['studies_overrides'];
-//   containerId: ChartingLibraryWidgetOptions['container_id'];
-// }
-
-export interface ChartContainerState {}
-
-function getLanguageFromURL(): LanguageCode | null {
-  const regex = new RegExp('[\\?&]lang=([^&#]*)');
-  const results = regex.exec(location.search);
-  //@ts-ignore
-  return results === null
-    ? null
-    : decodeURIComponent(results[1].replace(/\+/g, ' '));
-}
-
 export default function App() {
-  const [symbol] = useState('AAPL');
-  const [interval] = useState('D');
-  const [containerId] = useState('tv_chart_container');
-  const [datafeedUrl] = useState('https://demo_feed.tradingview.com');
-  const [libraryPath] = useState('/charting_library/');
-  const [chartsStorageUrl] = useState('https://saveload.tradingview.com');
-  const [chartsStorageApiVersion] = useState('1.1');
-  const [clientId] = useState('tradingview.com');
-  const [userId] = useState('public_user_id');
-  const [fullscreen] = useState(false);
-  const [autosize] = useState(true);
-  const [studiesOverrides] = useState({});
+  const containerId = 'tv_chart_container';
 
   let tvWidget: IChartingLibraryWidget | null = null;
 
   useEffect(() => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
-      symbol: symbol,
+      symbol: 'AAPL',
       //@ts-ignore
-      datafeed: new window.Datafeeds.UDFCompatibleDatafeed(datafeedUrl),
+      datafeed: new window.Datafeeds.UDFCompatibleDatafeed(
+        'https://demo_feed.tradingview.com'
+      ),
       //@ts-ignore
-      interval: interval,
+      interval: 'D',
       container_id: containerId,
-      library_path: libraryPath,
-
-      locale: getLanguageFromURL() || 'en',
+      library_path: '/charting_library/',
+      locale: 'en', //getLanguageFromURL() || 'en', //#get from react-i18n
       disabled_features: ['use_localstorage_for_settings'],
       enabled_features: ['study_templates'],
-      charts_storage_url: chartsStorageUrl,
-      //@ts-ignore
-      charts_storage_api_version: chartsStorageApiVersion,
-      client_id: clientId,
-      user_id: userId,
-      fullscreen: fullscreen,
-      autosize: autosize,
-      studies_overrides: studiesOverrides,
+      charts_storage_url: 'https://saveload.tradingview.com',
+      charts_storage_api_version: '1.1',
+      client_id: 'tradingview.com',
+      user_id: 'public_user_id',
+      fullscreen: false,
+      autosize: true,
+      studies_overrides: {},
     };
 
     tvWidget = new widget(widgetOptions);
